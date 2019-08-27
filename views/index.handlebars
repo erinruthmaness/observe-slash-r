@@ -1,11 +1,13 @@
 <div id="wrapper">
     <h1>A Charlotte Observe/r</h1>
     <h2>Observing Charlotte By Way of Reddit</h2>
+    <button id="refresh">Refresh</button>
+    <hr>
     <div id="articles">
         <ul>
             {{#each articles}}
             <li>
-                <p><span class="label">Title</span> {{this.title}}</p>
+                <p><span class="label">Title:</span> {{this.title}}</p>
                 <p><span class="label">Link:</span> {{this.link}}</p>
 
                 <button data-id="{{this._id}}" class="see-comments">See Comments</button>
@@ -16,4 +18,4 @@
     <div id="notes"></div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="app.js"></script>
+<script src="/assets/app.js"></script>
