@@ -1,4 +1,5 @@
 var express = require("express");
+var exphbs = require("express-handlebars");
 var logger = require("morgan");
 var mongoose = require("mongoose");
 
@@ -22,7 +23,10 @@ app.use(logger("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 // Make public a static folder
-app.use(express.static("public"));
+// app.use(express.static("public"));
+
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
 
 // Connect to the Mongo DB
 mongoose.connect("mongodb://localhost/observerobserver", { useNewUrlParser: true });
@@ -30,7 +34,7 @@ mongoose.connect("mongodb://localhost/observerobserver", { useNewUrlParser: true
 // Routes
 
 // A GET route for scraping the reddit board
-app.get("/scrape", function(req, res) {
+app.get("/", function(req, res) {
   // First, we grab the body of the html with axios
   axios.get("http://old.reddit.com/r/Charlotte/").then(function(response) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
@@ -48,19 +52,18 @@ app.get("/scrape", function(req, res) {
       console.log("title: " + result.title);
       console.log("link: " + result.link);
 
-
       // Create a new Article using the `result` object built from scraping
       db.Article.create(result)
         .then(function(dbArticle) {
           // View the added result in the console
           console.log(dbArticle);
+          res.render("index", {articles: result});
         })
         .catch(function(err) {
-          // If an error occurred, log it
           console.log(err);
+          return res.status(500).end();
         });
     });
-    res.send("Scrape Complete");
 
   });
 });
